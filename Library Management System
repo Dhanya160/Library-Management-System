@@ -1,0 +1,91 @@
+import java.util.ArrayList;
+import java.util.Scanner;
+
+class Book {
+    private String title;
+    private String author;
+    private boolean isAvailable;
+
+    public Book(String title, String author) {
+        this.title = title;
+        this.author = author;
+        this.isAvailable = true;
+    }
+
+    public String getTitle() { return title; }
+    public boolean isAvailable() { return isAvailable; }
+
+    public void borrow() { isAvailable = false; }
+    public void returnBook() { isAvailable = true; }
+
+    @Override
+    public String toString() {
+        return title + " by " + author + (isAvailable ? " (Available)" : " (Not Available)");
+    }
+}
+
+class Library {
+    private ArrayList<Book> books = new ArrayList<>();
+
+    public void addBook(String title, String author) {
+        books.add(new Book(title, author));
+    }
+
+    public void listBooks() {
+        for (Book book : books) {
+            System.out.println(book);
+        }
+    }
+
+    public void borrowBook(String title) {
+        for (Book book : books) {
+            if (book.getTitle().equalsIgnoreCase(title) && book.isAvailable()) {
+                book.borrow();
+                System.out.println("You borrowed " + title);
+                return;
+            }
+        }
+        System.out.println("Book not available.");
+    }
+
+    public void returnBook(String title) {
+        for (Book book : books) {
+            if (book.getTitle().equalsIgnoreCase(title) && !book.isAvailable()) {
+                book.returnBook();
+                System.out.println("You returned " + title);
+                return;
+            }
+        }
+        System.out.println("Invalid return attempt.");
+    }
+}
+
+public class LibrarySystem {
+    public static void main(String[] args) {
+        Library library = new Library();
+        library.addBook("Java Programming", "John Doe");
+        library.addBook("Python for Beginners", "Jane Doe");
+
+        Scanner scanner = new Scanner(System.in);
+        while (true) {
+            System.out.println("1. List Books  2. Borrow Book  3. Return Book  4. Exit");
+            int choice = scanner.nextInt();
+            scanner.nextLine();
+
+            if (choice == 1) {
+                library.listBooks();
+            } else if (choice == 2) {
+                System.out.print("Enter book title to borrow: ");
+                String title = scanner.nextLine();
+                library.borrowBook(title);
+            } else if (choice == 3) {
+                System.out.print("Enter book title to return: ");
+                String title = scanner.nextLine();
+                library.returnBook(title);
+            } else {
+                break;
+            }
+        }
+        scanner.close();
+    }
+}
